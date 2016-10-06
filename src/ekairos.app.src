@@ -1,0 +1,11 @@
+{application, ekairos,
+ [
+  {description, "Suitable moment finder"},
+  {vsn, "0.0.1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {env, []}
+ ]}.
