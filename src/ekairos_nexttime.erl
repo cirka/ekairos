@@ -39,7 +39,7 @@ next_time([{ListType,Rules}=CurrentRules|RestToMatch]=ToMatch,MatchingRulesList,
                       [{next_hint,NextDateTime,CurrentRules}|MatchingRulesList],
                       FromDateTime);
         {true,never} ->
-            next_time(RestToMatch,[{never,Rules}|MatchingRulesList],FromDateTime);
+            next_time(RestToMatch,[{never,CurrentRules}|MatchingRulesList],FromDateTime);
         {false,{next_hint,NextDateTime}} ->
             next_time([CurrentRules|RestToMatch],MatchingRulesList,NextDateTime);
         {false,never} ->
