@@ -32,7 +32,7 @@ find({YearsRulesList,
 next_time([]=_RulesListToMatch,_MathingRulesList,FromDateTime) ->
     {next_time,FromDateTime};
 
-next_time([{ListType,Rules}=CurrentRules|RestToMatch]=ToMatch,MatchingRulesList,FromDateTime) ->
+next_time([{ListType,Rules}=CurrentRules|RestToMatch]=ToMatch,MatchingRulesList,{{Y,_,_},_} = FromDateTime) ->
     case match_and_hint(ListType,{Rules,FromDateTime}) of
         {true,{next_hint,NextDateTime}} ->
             next_time(RestToMatch,
@@ -43,8 +43,11 @@ next_time([{ListType,Rules}=CurrentRules|RestToMatch]=ToMatch,MatchingRulesList,
         {false,{next_hint,NextDateTime}} ->
             next_time([CurrentRules|RestToMatch],MatchingRulesList,NextDateTime);
         {false,never} ->
+                Is_leap_year = calendar:is_leap_year(Y),
                 case MatchingRulesList of
-                    [{never,_PreviousRules}|_Matched] -> never;
+                    [{never,_PreviousRules}|_Matched] when Is_leap_year -> never;
+                    [{never,MonthRules},{next_hint,NextDateTime,YearRules}] ->
+                        next_time([YearRules|[MonthRules|ToMatch]],[],NextDateTime);
                     [{next_hint,HintedNextDateTime,PreviousRules}|Matched] ->
                         next_time([PreviousRules|ToMatch],Matched,HintedNextDateTime);
                     [] -> never
@@ -98,7 +101,7 @@ match_day({DoMRules,DoWRules},Y,M,D) ->
 %%Simple incrementing hinter    
 hint_day(Rules,Y,M,D) ->
     hint_day(Rules,Y,M,D+1,calendar:last_day_of_the_month(Y,M)).
-    
+
 hint_day(_Rules,_Y,_M,D,MaxDay) when D > MaxDay -> never;
 
 hint_day(Rules,Y,M,D,MaxDay) ->
