@@ -141,9 +141,9 @@ hint_second(Rules,Y,M,D,HH,MM,SS) ->
 %---- Hinter ------
 %% Find when will rule match in the future
 hint_next_integer_match([any|_Rules],Current,no_limits) -> 
-    Current + 1;
+    Current;
 hint_next_integer_match([any|_Rules],Current,NoMore) when Current + 1 =< NoMore ->
-    Current + 1;
+    Current;
 hint_next_integer_match([any|_Rules],_Current,_NoMore) ->
     never;
 hint_next_integer_match(Rules,Current,NoMore) ->
